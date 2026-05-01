@@ -1,23 +1,44 @@
 # 🍎 FreshScan - Digital Food Expiry Tracker
 
-![FreshScan Banner](https://img.shields.io/badge/FreshScan-QR%20Expiry%20Tracker-blue)
-![Python](https://img.shields.io/badge/Python-3.8+-green)
-![Flask](https://img.shields.io/badge/Flask-2.3+-red)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+**Scan Safe, Eat Fresh** - A QR-based digital food expiry tracking system for quick commerce platforms.
 
-> **Scan Safe, Eat Fresh** - A QR-based digital food expiry tracking system
+---
 
 ## 📱 About the Project
 
-FreshScan solves the problem of faded/unreadable expiry dates on food packets by providing a digital expiry tracking system using QR codes.
+FreshScan solves the problem of expired product delivery by providing a digital expiry tracking system using QR codes. When customers receive products, they can scan the QR code to instantly check if the product is safe, near expiry, or expired.
 
-### ✨ Features
-- ✅ **QR Code Generation** for each product/batch
-- ✅ **Real-time Expiry Calculation** (Safe/Near Expiry/Expired)
-- ✅ **Mobile-Friendly** - No app needed, works with phone camera
-- ✅ **Admin Dashboard** for product management
-- ✅ **Color-coded Status** (Green/Yellow/Red)
-- ✅ **SDG Integration** (Goals 3, 9, 12)
+**Target Platforms:** Zepto, Swiggy Instamart, Blinkit, BigBasket
+
+---
+
+## ✨ Features
+
+- ✅ Complete CRUD Operations (Add, Edit, Delete Products)
+- ✅ QR Code Generation for each product/batch
+- ✅ Real-time Expiry Calculation (Safe/Near Expiry/Expired)
+- ✅ Mobile-Friendly - No app needed, works with phone camera
+- ✅ Admin Dashboard with Pagination (15 products per page)
+- ✅ Search by Batch ID
+- ✅ Filter by Status (Safe/Near Expiry/Expired)
+- ✅ CSV Export for Reporting
+- ✅ Print QR Labels
+- ✅ Color-coded Status (🟢 Green / 🟡 Yellow / 🔴 Red)
+- ✅ Works on any WiFi (ngrok integration)
+
+---
+
+## 🛠️ Technology Stack
+
+| Component | Technology |
+|-----------|------------|
+| Backend | Python Flask |
+| Database | SQLite with sqlite3 |
+| QR Generation | qrcode + Pillow |
+| Frontend | HTML5, CSS3, JavaScript |
+| Tunneling | ngrok (for mobile scanning) |
+
+---
 
 ## 🚀 Quick Start
 
@@ -26,14 +47,17 @@ FreshScan solves the problem of faded/unreadable expiry dates on food packets by
 - pip
 
 ### Installation
+
 ```bash
 # Clone repository
-git clone https://github.com/YOUR-USERNAME/FreshScan.git
-cd FreshScan
+git clone https://github.com/snkiruthikaa/FreshScan-V2.git
+cd FreshScan-V2
 
 # Install dependencies
-pip install flask qrcode[pil] pillow
+pip install -r requirements.txt
+
+# Initialize database
+python database.py
 
 # Run the application
-python database.py
 python app.py
