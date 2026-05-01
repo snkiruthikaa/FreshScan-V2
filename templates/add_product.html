@@ -30,7 +30,7 @@
         border-radius: 20px;
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
         width: 100%;
-        max-width: 600px;
+        max-width: 650px;
         padding: 40px;
         animation: slideUp 0.5s ease-out;
       }
@@ -117,6 +117,11 @@
         box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
       }
 
+      select {
+        cursor: pointer;
+        background-color: white;
+      }
+
       textarea {
         resize: vertical;
         min-height: 100px;
@@ -129,6 +134,15 @@
         display: flex;
         align-items: center;
         gap: 5px;
+      }
+
+      .date-hint-warning {
+        font-size: 12px;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #e71d36;
       }
 
       .btn {
@@ -184,6 +198,16 @@
         gap: 20px;
       }
 
+      .category-hint {
+        font-size: 12px;
+        color: #6c757d;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+
       @media (max-width: 768px) {
         .form-row {
           grid-template-columns: 1fr;
@@ -217,7 +241,7 @@
             type="text"
             id="product_name"
             name="product_name"
-            placeholder="e.g., Milk, Bread, Yogurt"
+            placeholder="e.g., Organic Milk, Whole Wheat Bread, Greek Yogurt"
             required
           />
         </div>
@@ -228,21 +252,29 @@
             type="text"
             id="batch_id"
             name="batch_id"
-            placeholder="e.g., MILK001, BREAD2024"
+            placeholder="e.g., MILK001, BREAD2024, YOG003"
             required
           />
+          <div class="date-hint">
+            <i class="fas fa-info-circle"></i>
+            Unique identifier for this batch
+          </div>
         </div>
 
         <div class="form-group">
           <label for="category" class="required">Category</label>
           <select id="category" name="category" required>
-            <option value="">Select a category</option>
+            <option value="">-- Select a food category --</option>
             {% for category in categories %}
             <option value="{{ category[0] }}">
               {{ category[1] }} {{ category[0] }}
             </option>
             {% endfor %}
           </select>
+          <div class="category-hint">
+            <i class="fas fa-utensils"></i>
+            Choose from 24+ food categories including Dairy, Bakery, Fruits, Vegetables, Meat, Frozen, Beverages, Snacks, and more!
+          </div>
         </div>
 
         <div class="form-row">
@@ -255,10 +287,6 @@
               value="{{ today }}"
               required
             />
-            <div class="date-hint">
-              <i class="fas fa-calendar"></i>
-              Format: YYYY-MM-DD
-            </div>
           </div>
 
           <div class="form-group">
@@ -270,10 +298,8 @@
               value="{{ next_week }}"
               required
             />
-            <div class="date-hint">
-              <i class="fas fa-calendar-check"></i>
-              Test with different dates for demo
-            </div>
+            
+            
           </div>
         </div>
 
@@ -284,7 +310,7 @@
           <textarea
             id="storage_instructions"
             name="storage_instructions"
-            placeholder="e.g., Keep refrigerated, Store in cool dry place..."
+            placeholder="e.g., Keep refrigerated at 4°C, Store in cool dry place, Consume within 3 days of opening..."
           ></textarea>
         </div>
 
@@ -319,17 +345,19 @@
         <ul style="color: #6c757d; font-size: 14px; line-height: 1.6">
           <li>
             For <strong style="color: #e71d36">Expired</strong> demo: Set expiry
-            date in the past
+            date in the past (e.g., yesterday or last week)
           </li>
           <li>
-            For <strong style="color: #ffc107">Near Expiry</strong> demo: Set
-            expiry date today or tomorrow
+            For <strong style="color: #ffc107">Near Expiry</strong> demo: Set expiry
+            date today, tomorrow, or within 7 days
           </li>
           <li>
             For <strong style="color: #28a745">Safe</strong> demo: Set expiry
-            date in the future
+            date in the future (e.g., next month or next year)
           </li>
-          <li>After adding, go to Admin Panel and click "Generate All QR"</li>
+          <li>Manufacturing date can also be set to any date - past or future</li>
+          <li>After adding, QR code is generated automatically!</li>
+          <li>Select from 24+ food categories including Dairy, Bakery, Fruits, Vegetables, Meat, Frozen, Beverages, Snacks, and more!</li>
         </ul>
       </div>
     </div>
@@ -369,7 +397,7 @@
                             <br>
                             <small>QR code has been generated. Redirecting to admin panel...</small>
                         </div>
-                    `;
+                      `;
               messageDiv.style.display = "block";
 
               // Redirect to admin panel after 2 seconds
@@ -382,7 +410,7 @@
                             <i class="fas fa-exclamation-circle"></i>
                             ❌ Error: ${result.error || "Something went wrong"}
                         </div>
-                    `;
+                      `;
               messageDiv.style.display = "block";
             }
           } catch (error) {
@@ -400,21 +428,25 @@
           }
         });
 
-      // Set min dates for better UX
+      // NO RESTRICTIONS on dates! Can select ANY date
       document.addEventListener("DOMContentLoaded", function () {
-        const today = new Date().toISOString().split("T")[0];
         const mfgDateInput = document.getElementById("mfg_date");
         const expiryDateInput = document.getElementById("expiry_date");
 
-        mfgDateInput.max = today;
-        expiryDateInput.min = today;
+        // REMOVE ALL RESTRICTIONS - Allow ANY date (past, present, future)
+        mfgDateInput.removeAttribute("min");
+        mfgDateInput.removeAttribute("max");
+        expiryDateInput.removeAttribute("min");
+        expiryDateInput.removeAttribute("max");
 
-        // Add some sample suggestions on focus
+        console.log("✅ Date restrictions removed - can select ANY date!");
+
+        // Add helpful placeholders
         document
           .getElementById("product_name")
           .addEventListener("focus", function () {
             if (!this.value) {
-              this.placeholder = "Try: Milk, Bread, Yogurt, Cheese, Eggs";
+              this.placeholder = "Try: Organic Milk, Whole Wheat Bread, Greek Yogurt";
             }
           });
 
@@ -425,6 +457,17 @@
               this.placeholder = "Try: MILK001, BREAD2024, YOG003";
             }
           });
+
+        // Show warning if expiry date is in the past
+        expiryDateInput.addEventListener("change", function () {
+          const selectedDate = new Date(this.value);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          
+          if (selectedDate < today) {
+            console.log("⚠️ Expiry date is in the past - Product will show as EXPIRED");
+          }
+        });
       });
     </script>
   </body>

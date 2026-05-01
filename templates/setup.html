@@ -500,17 +500,12 @@
           <div class="step">
             <div class="step-number">1</div>
             <div class="step-content">
-              <h3 class="step-title">Connect Your Devices</h3>
+              <h3 class="step-title">Scan from Any Network</h3>
               <p class="step-description">
-                Ensure your computer and smartphone are connected to the same
-                Wi-Fi network. This is required for QR codes to work on your
-                phone.
+                Your computer and smartphone can be on different Wi-Fi networks. 
+                Using ngrok, the QR codes work on any network - no setup required.
+                Just scan the QR code with your phone camera from anywhere.
               </p>
-              <div class="step-code">
-                <span class="comment"># Check your IP address:</span><br />
-                $ ipconfig <span class="comment">(Windows)</span><br />
-                $ ifconfig <span class="comment">(Mac/Linux)</span>
-              </div>
             </div>
           </div>
 
@@ -537,28 +532,12 @@
                 system works. No app installation needed!
               </p>
               <div class="qr-demo">
-                <div class="qr-image">
-                  <div
-                    style="
-                      width: 100%;
-                      height: 100%;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      background: white;
-                    "
-                  >
+                <div class="qr-image" id="qrCodeContainer">
+                  <div style="width:100%; height:100%; display: flex; align-items: center; justify-content: center; background: white; border-radius: 10px;">
                     <div style="text-align: center; padding: 20px">
-                      <div style="font-size: 48px">🔍</div>
-                      <div
-                        style="margin-top: 10px; font-size: 12px; color: #666"
-                      >
-                        Sample QR Code
-                      </div>
-                      <div
-                        style="margin-top: 5px; font-size: 10px; color: #999"
-                      >
-                        Scan me!
+                      <div style="font-size: 48px">📱</div>
+                      <div style="margin-top: 10px; font-size: 12px; color: #666">
+                        Loading QR Code...
                       </div>
                     </div>
                   </div>
@@ -599,13 +578,13 @@
           </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Action Buttons - FIXED VERSION -->
         <div class="action-buttons">
           <a href="/admin" class="btn btn-primary">
             <i class="fas fa-cogs"></i>
             Launch Admin Panel
           </a>
-          <a href="/product/1" class="btn btn-secondary" target="_blank">
+          <a href="javascript:void(0)" id="sampleProductBtn" class="btn btn-secondary">
             <i class="fas fa-external-link-alt"></i>
             View Sample Product
           </a>
@@ -626,53 +605,58 @@
     </div>
 
     <script>
-      // Add interactivity
       document.addEventListener("DOMContentLoaded", function () {
-        // Update QR code with actual URL if server is running
-        const qrImage = document.querySelector(".qr-image");
-        const sampleUrl = `{{ config.BASE_URL }}/product/1`;
-
-        // Create QR code using an online service (for demo)
-        // In real implementation, you would generate it server-side
-        const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
-          sampleUrl
-        )}`;
-
-        // Replace the placeholder with actual QR code
-        qrImage.innerHTML = `<img src="${qrCodeURL}" alt="Sample QR Code" style="width: 100%; height: 100%; object-fit: cover;">`;
-
+        // Get the base URL
+        const baseUrl = "{{ config.BASE_URL }}";
+        const sampleProductId = "{{ sample_product_id|default('1') }}";
+        
+        // Create REAL QR code for sample product
+        const sampleUrl = `${baseUrl}/product/${sampleProductId}`;
+        const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(sampleUrl)}`;
+        
+        // Update QR code image
+        const qrContainer = document.getElementById("qrCodeContainer");
+        if (qrContainer) {
+          qrContainer.innerHTML = `<img src="${qrCodeURL}" alt="Sample QR Code" style="width: 100%; height: 100%; object-fit: contain;">`;
+        }
+        
+        // Fix the "View Sample Product" button
+        const sampleBtn = document.getElementById("sampleProductBtn");
+        if (sampleBtn) {
+          sampleBtn.href = sampleUrl;
+          sampleBtn.target = "_blank";
+          sampleBtn.style.cursor = "pointer";
+          
+          // Also add click handler in case href doesn't work
+          sampleBtn.addEventListener("click", function(e) {
+            if (!sampleBtn.href || sampleBtn.href === "javascript:void(0)") {
+              e.preventDefault();
+              window.open(sampleUrl, "_blank");
+            }
+          });
+        }
+        
         // Auto-copy IP address on click
         const ipElement = document.querySelector(".info-item .value");
-        ipElement.style.cursor = "pointer";
-        ipElement.title = "Click to copy";
-        ipElement.addEventListener("click", function () {
-          navigator.clipboard.writeText("{{ config.HOST }}").then(() => {
-            const originalText = this.textContent;
-            this.textContent = "Copied!";
-            this.style.color = "var(--success-color)";
-            setTimeout(() => {
-              this.textContent = originalText;
-              this.style.color = "";
-            }, 2000);
+        if (ipElement) {
+          ipElement.style.cursor = "pointer";
+          ipElement.title = "Click to copy";
+          ipElement.addEventListener("click", function () {
+            navigator.clipboard.writeText("{{ config.HOST }}").then(() => {
+              const originalText = this.textContent;
+              this.textContent = "Copied!";
+              this.style.color = "var(--success-color)";
+              setTimeout(() => {
+                this.textContent = originalText;
+                this.style.color = "";
+              }, 2000);
+            });
           });
-        });
-      });
-
-      // Check server status
-      async function checkServerStatus() {
-        try {
-          const response = await fetch("/admin");
-          if (response.ok) {
-            console.log("✅ Server is running");
-          }
-        } catch (error) {
-          console.log("⚠️ Server connection issue");
         }
-      }
-
-      // Check every 10 seconds
-      setInterval(checkServerStatus, 10000);
-      checkServerStatus();
+        
+        console.log("✅ Setup page loaded");
+        console.log("📱 Sample product URL:", sampleUrl);
+      });
     </script>
   </body>
 </html>

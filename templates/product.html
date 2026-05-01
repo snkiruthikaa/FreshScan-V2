@@ -261,6 +261,62 @@
         font-weight: 700;
       }
 
+      /* QR Code Section */
+      .qr-section {
+        text-align: center;
+        margin: 25px 0;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 18px;
+      }
+
+      .qr-section h3 {
+        color: #4361ee;
+        margin-bottom: 15px;
+        font-size: 18px;
+      }
+
+      .qr-image-container {
+        display: inline-block;
+        padding: 15px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .qr-image-container img {
+        width: 200px;
+        height: 200px;
+        display: block;
+        margin: 0 auto;
+        transition: transform 0.3s ease;
+      }
+
+      .qr-image-container img:hover {
+        transform: scale(1.05);
+      }
+
+      .qr-copy-btn {
+        margin-top: 15px;
+        padding: 10px 20px;
+        background: #4361ee;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .qr-copy-btn:hover {
+        background: #3a0ca3;
+        transform: translateY(-2px);
+      }
+
       /* Storage Instructions */
       .storage-card {
         background: linear-gradient(135deg, #fff9db 0%, #ffe8a1 100%);
@@ -334,6 +390,10 @@
         }
         .status-text {
           font-size: 20px;
+        }
+        .qr-image-container img {
+          width: 150px;
+          height: 150px;
         }
       }
     </style>
@@ -420,6 +480,25 @@
           </div>
         </div>
 
+        <!-- QR Code Section -->
+        <div class="qr-section">
+          <h3>
+            <i class="fas fa-qrcode"></i> Product QR Code
+          </h3>
+          <div class="qr-image-container">
+            <img 
+              src="/static/qr_codes/product_{{ product_id }}.png" 
+              alt="QR Code for {{ product_name }}"
+              onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNGMEYwRjAiLz48dGV4dCB4PSIxMDAiIHk9IjEwMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5HZW5lcmF0ZSBRUjwvdGV4dD48L3N2Zz4='">
+          </div>
+          <p style="margin-top: 15px; font-size: 14px; color: #6c757d;">
+            <i class="fas fa-camera"></i> Scan this QR code to check expiry anytime!
+          </p>
+          <button class="qr-copy-btn" onclick="copyProductLink()">
+            <i class="fas fa-copy"></i> Copy Product Link
+          </button>
+        </div>
+
         <!-- Storage Instructions (if available) -->
         {% if storage_instructions %}
         <div class="storage-card">
@@ -446,6 +525,16 @@
     </div>
 
     <script>
+      // Copy product link function
+      function copyProductLink() {
+        const link = window.location.href;
+        navigator.clipboard.writeText(link).then(() => {
+          alert('✅ Product link copied: ' + link);
+        }).catch(() => {
+          alert('❌ Failed to copy link');
+        });
+      }
+
       // Auto-refresh every 5 minutes to update remaining days
       setTimeout(() => {
         window.location.reload();

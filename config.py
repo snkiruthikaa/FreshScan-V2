@@ -15,7 +15,15 @@ class Config:
     # Server configuration
     HOST = get_ip()
     PORT = 5003
-    BASE_URL = f"http://{HOST}:{PORT}"
+    LOCAL_URL = f"http://{HOST}:{PORT}"
+    
+    # 🔥 CHANGE THIS BASED ON YOUR NEEDS 🔥
+    MODE = "CLOUD"  # "CLOUD" for ngrok (works anywhere) OR "LOCAL" for same WiFi only
+    
+    if MODE == "CLOUD":
+        BASE_URL = "https://mouldier-quintin-folksily.ngrok-free.dev"
+    else:
+        BASE_URL = LOCAL_URL
     
     # Database configuration
     DATABASE = 'freshscan.db'

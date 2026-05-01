@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import config
 import threading
 
-# Use thread-local storage for database connections
 thread_local = threading.local()
 
 class Database:
@@ -48,16 +47,32 @@ class Database:
             )
         ''')
         
-        # Insert default categories
+        # Insert default categories - 24 Food-Only Categories
         default_categories = [
-            ('Dairy', '🥛'),
-            ('Bakery', '🍞'),
-            ('Beverages', '🥤'),
-            ('Snacks', '🍪'),
-            ('Fruits', '🍎'),
-            ('Vegetables', '🥦'),
-            ('Meat', '🥩'),
-            ('Frozen', '❄️')
+            ("Dairy & Eggs", "🥛"),
+            ("Bakery & Bread", "🍞"),
+            ("Fresh Fruits", "🍎"),
+            ("Fresh Vegetables", "🥬"),
+            ("Meat & Seafood", "🍗"),
+            ("Frozen Foods", "❄️"),
+            ("Beverages - Cold", "🥤"),
+            ("Beverages - Hot", "☕"),
+            ("Snacks & Chips", "🍪"),
+            ("Chocolates & Candy", "🍫"),
+            ("Breakfast Cereals", "🥣"),
+            ("Cooking Essentials", "🧂"),
+            ("Ready to Eat", "🍱"),
+            ("Pasta & Noodles", "🍝"),
+            ("Sauces & Condiments", "🥫"),
+            ("Canned & Packaged", "🥫"),
+            ("Health & Nutrition", "💪"),
+            ("Baby Food", "🍼"),
+            ("Organic & Health Foods", "🌱"),
+            ("Sweets & Desserts", "🍰"),
+            ("Pickles & Preserves", "🥒"),
+            ("Spreads & Dips", "🥑"),
+            ("Indian Grocery", "🍛"),
+            ("International Cuisine", "🍕")
         ]
         
         for category, icon in default_categories:
@@ -70,7 +85,7 @@ class Database:
                 pass
         
         conn.commit()
-        print("✅ Database initialized successfully!")
+        print("✅ Database initialized successfully with 24 food categories!")
     
     def add_product(self, product_data):
         """Add a new product to database"""
@@ -181,3 +196,10 @@ class Database:
 
 # Singleton instance
 db = Database()
+
+# Initialize tables immediately when module loads
+db.init_tables()
+
+if __name__ == "__main__":
+    # This runs only when database.py is executed directly
+    print("✅ Database tables verified and ready!")
